@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>갈매중학교 1학년 5반 양성평등 사례 공모작</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+:root{
+  --bg:#f3f6fb;
+  --card:#ffffff;
+  --ink:#2e241c;
+  --muted:#8a7562;
+  --main:#8b5cf6;
+  --main2:#a78bfa;
+  --accent:#c084fc;
+  --danger:#d85656;
+  --line:#ead8c3;
+  --shadow:0 16px 40px rgba(86,58,32,.12);
+  --r:24px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  margin:0;
+  position:relative;
+  font-family:"Jua",system-ui,sans-serif;
+  background:
+    radial-gradient(circle at 10% 0%,#dbe7ff 0 18%,transparent 38%),
+    radial-gradient(circle at 100% 20%,#dff0df 0 12%,transparent 32%),
+    linear-gradient(160deg,#f8efe4,#f3eadf 55%,#f8f4ef);
+  color:var(--ink);
+  min-height:100vh;
+}
+button,input,textarea,select{font-family:inherit}
+button{
+  border:0;
+  border-radius:16px;
+  padding:11px 14px;
+  background:var(--main);
+  color:white;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 8px 20px rgba(199,118,77,.22);
+}
+button.secondary{background:#efe2d2;color:var(--ink);box-shadow:none}
+button.green{background:var(--accent)}
+button.danger{background:var(--danger)}
+button.small{padding:8px 10px;border-radius:12px;font-size:12px}
+button:disabled{opacity:.45;cursor:not-allowed}
+input,textarea,select{
+  width:100%;
+  border:1px solid var(--line);
+  background:#fffdf8;
+  border-radius:16px;
+  padding:12px;
+  outline:none;
+  color:var(--ink);
+}
+textarea{min-height:110px;resize:vertical}
+.app{display:flex;min-height:100vh}
+.side{
+  width:250px;
+  padding:18px;
+  background:rgba(255,250,242,.78);
+  backdrop-filter:blur(12px);
+  border-right:1px solid var(--line);
+  position:fixed;
+  left:0;top:0;bottom:0;
+  z-index:20;
+  transform:translateX(0);
+  transition:.25s;
+}
+.logo{
+  background:linear-gradient(135deg,var(--main),var(--main2));
+  color:white;
+  padding:18px;
+  border-radius:24px;
+  box-shadow:0 20px 50px rgba(31,41,55,.10);
+  margin-bottom:16px;
+  font-weight:900;
+  line-height:1.35;
+}
+.nav button{
+  width:100%;
+  margin:5px 0;
+  background:transparent;
+  color:var(--ink);
+  box-shadow:none;
+  text-align:left;
+  border:1px solid transparent;
+}
+.nav button.active{
+  background:#fff6ea;
+  border-color:var(--line);
+  color:var(--main);
+}
+.main{
+  margin-left:250px;
+  width:calc(100% - 250px);
+  padding:18px;
+}
+.top{
+  position:sticky;
+  top:0;
+  z-index:10;
+  background:rgba(247,241,232,.75);
+  backdrop-filter:blur(10px);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:12px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  box-shadow:0 20px 50px rgba(31,41,55,.10);
+}
+.menuBtn{display:none}
+.title{font-weight:900;flex:1}
+.userBox{display:flex;align-items:center;gap:8px}
+.page{display:none;animation:fade .2s ease}
+.page.active{display:block;padding-top:8px}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.hero{
+  margin-top:26px;
+  padding:34px 20px;
+  border-radius:32px;
+  background:linear-gradient(135deg,#8b5cf6,#a78bfa 55%,#c084fc); color:white;
+  box-shadow:0 20px 50px rgba(31,41,55,.10);
+  text-align:center;
+}
+.hero h1{margin:0;font-size:clamp(26px,6vw,54px);line-height:1.15}
+.hero p{color:rgba(255,255,255,.92);font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:16px}
+.card{
+  background:rgba(255,255,255,.88);
+  border:1px solid var(--line);
+  border-radius:var(--r);
+  padding:16px;
+  box-shadow:0 20px 50px rgba(31,41,55,.10);
+}
+.card h3{margin:0 0 10px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.space{justify-content:space-between}
+.list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.item{
+  padding:14px;
+  border:1px solid var(--line);
+  background:#fffdf8;
+  border-radius:20px;
+}
+.itemTitle{font-weight:900}
+.meta{font-size:12px;color:var(--muted);margin-top:4px}
+.badge{
+  display:inline-flex;
+  padding:5px 9px;
+  border-radius:999px;
+  background:#f0e4d5;
+  color:#6f4e37;
+  font-size:12px;
+  font-weight:900;
+}
+.hidden{display:none!important}
+.modal{
+  position:fixed;inset:0;
+  background:rgba(30,20,10,.35);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:50;
+  padding:18px;
+}
+.modal.show{display:flex}
+.modalBox{
+  width:min(520px,100%);
+  max-height:88vh;
+  overflow:auto;
+  background:var(--card);
+  border-radius:28px;
+  padding:18px;
+  box-shadow:0 30px 80px rgba(0,0,0,.22);
+}
+.form{display:grid;gap:10px}
+.noticeSmall{font-size:12px;color:var(--danger);font-weight:800}
+.bar{height:12px;background:#efe0ce;border-radius:999px;overflow:hidden}
+.bar span{display:block;height:100%;background:linear-gradient(90deg,var(--main2),var(--accent));border-radius:999px}
+.quizOption,.surveyOption{
+  background:#fffdf8;color:var(--ink);box-shadow:none;border:1px solid var(--line);
+  width:100%;text-align:left;margin:5px 0;
+}
+.gameBox{
+  background:#2e241c;
+  color:#fff8eb;
+  border-radius:28px;
+  padding:14px;
+  overflow:hidden;
+}
+.wordGrid{
+  display:grid;
+  grid-template-columns:repeat(8,1fr);
+  gap:5px;
+  user-select:none;
+  touch-action:none;
+}
+.cell{
+  aspect-ratio:1/1;
+  display:flex;align-items:center;justify-content:center;
+  background:#fff8eb;
+  color:#2e241c;
+  border-radius:10px;
+  font-weight:900;
+}
+.cell.pick{background:#f0b07b}
+.cell.done{background:#8fb996;color:white}
+.bridge{
+  display:flex;
+  gap:4px;
+  justify-content:center;
+  margin:14px 0;
+}
+.plank{
+  width:28px;height:12px;border-radius:5px;background:#8fb996;
+}
+.plank.broken{background:#6c5545;opacity:.35}
+.letters{font-size:30px;letter-spacing:8px;text-align:center;font-weight:900}
+.bridgeFakeInput{
+  min-height:44px;
+  border:1px solid #ffe7c2;
+  background:#fff8eb;
+  color:#2e241c;
+  border-radius:16px;
+  padding:11px 12px;
+  font-weight:900;
+  flex:1;
+}
+.bridgeKeys{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  margin-top:10px;
+}
+.keyRow{
+  display:grid;
+  grid-template-columns:repeat(10,1fr);
+  gap:5px;
+}
+.keyRow.mid{grid-template-columns:repeat(9,1fr)}
+.keyRow.bottom{grid-template-columns:repeat(7,1fr)}
+.keyRow.control{grid-template-columns:1.3fr 1.3fr 1.3fr 1.7fr}
+.bridgeKeys button{
+  padding:10px 0;
+  border-radius:12px;
+  background:#fff8eb;
+  color:#2e241c;
+  box-shadow:none;
+  font-weight:900;
+}
+.bridgeKeys button.wide{background:#f0b07b;color:white}
+.bridgeGuide{font-size:12px;color:#ffe7c2;margin:8px 0 0;text-align:center;font-weight:800}
+
+.limitStage{
+  background:#fff;
+  color:#2e241c;
+  border-radius:22px;
+  padding:14px;
+  border:1px solid #ead8c3;
+}
+.limitPeople{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin:10px 0;
+}
+.limitPerson{
+  min-height:160px;
+  border:2px solid #efe0ce;
+  border-radius:20px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  background:#fffaf2;
+  position:relative;
+}
+.limitAvatar{font-size:58px;line-height:1}
+.limitScore{font-size:22px;font-weight:900}
+.limitFloat{
+  position:absolute;
+  top:18px;
+  right:20px;
+  color:#c7764d;
+  font-size:24px;
+  font-weight:900;
+  animation:floatUp .8s ease forwards;
+}
+@keyframes floatUp{from{opacity:1;transform:translateY(8px)}to{opacity:0;transform:translateY(-24px)}}
+.limitEmoji{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:86px;
+  border-radius:20px;
+  background:#f7f1e8;
+  font-size:48px;
+  margin-top:10px;
+}
+.limitEmojiList{font-size:22px;letter-spacing:3px;word-break:break-all}
+
+.equalityVideoCard{
+  position:sticky;
+  top:86px;
+  z-index:8;
+  margin-bottom:14px;
+}
+.videoWrap{
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  overflow:hidden;
+  border-radius:20px;
+  background:#1f1812;
+  border:1px solid var(--line);
+}
+.videoThumb{
+  position:absolute;
+  inset:0;
+  display:block;
+  color:white;
+  text-decoration:none;
+}
+.videoThumb img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  filter:brightness(.72);
+}
+.playBadge{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  width:78px;
+  height:78px;
+  border-radius:50%;
+  background:rgba(199,118,77,.94);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 12px 30px rgba(0,0,0,.28);
+  font-size:34px;
+  padding-left:5px;
+}
+.videoHint{
+  position:absolute;
+  left:14px;
+  right:14px;
+  bottom:14px;
+  background:rgba(0,0,0,.48);
+  border-radius:14px;
+  padding:10px 12px;
+  font-weight:900;
+}
+
+.card,.top,.side,.hero{
+  backdrop-filter:blur(18px);
+}
+.card:hover{
+  transform:translateY(-3px);
+  transition:.2s ease;
+}
+.nav button{
+  border-radius:14px;
+}
+.nav button.active{
+  background:linear-gradient(135deg,#f3e8ff,#ffffff);
+  font-weight:900;
+}
+.item{
+  transition:.2s ease;
+}
+.item:hover{
+  transform:translateX(4px);
+}
+
+
+.rankingBoard{
+  display:grid;
+  gap:14px;
+}
+.rankingHero{
+  background:linear-gradient(135deg,#111827,#334155 60%,#8b5cf6);
+  color:white;
+  border-radius:28px;
+  padding:20px;
+  position:relative;
+  overflow:hidden;
+}
+.rankingHero:after{
+  content:"";
+  position:absolute;
+  width:180px;
+  height:180px;
+  right:-60px;
+  top:-70px;
+  background:rgba(255,255,255,.14);
+  border-radius:50%;
+}
+.rankingHero h3{
+  margin:0 0 6px;
+  font-size:24px;
+}
+.rankingHero p{
+  margin:0;
+  color:rgba(255,255,255,.78);
+  font-weight:800;
+}
+.rankList{
+  display:grid;
+  gap:10px;
+}
+.rankItem{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:12px;
+  padding:14px;
+  border-radius:22px;
+  background:rgba(255,255,255,.92);
+  border:1px solid rgba(226,232,240,.9);
+  box-shadow:0 16px 34px rgba(15,23,42,.08);
+}
+.rankMedal{
+  width:42px;
+  height:42px;
+  border-radius:15px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+  font-weight:1000;
+  background:#f3e8ff;
+  color:#8b5cf6;
+}
+.rankName{
+  font-weight:1000;
+  font-size:16px;
+}
+.rankScore{
+  padding:8px 12px;
+  border-radius:999px;
+  background:#f3e8ff;
+  color:#7c3aed;
+  font-weight:1000;
+}
+.rankItem.top1{
+  background:linear-gradient(135deg,#fff7cc,#ffffff);
+  border-color:#ffe082;
+}
+.rankItem.top1 .rankMedal{background:#ffd84d;color:#473300}
+.rankItem.top2{
+  background:linear-gradient(135deg,#f1f5f9,#ffffff);
+}
+.rankItem.top2 .rankMedal{background:#cbd5e1;color:#334155}
+.rankItem.top3{
+  background:linear-gradient(135deg,#ffedd5,#ffffff);
+}
+.rankItem.top3 .rankMedal{background:#fdba74;color:#7c2d12}
+
+
+.profileWrap{
+  display:grid;
+  gap:14px;
+}
+.profileHero{
+  background:linear-gradient(135deg,#7c3aed,#a855f7 55%,#c084fc);
+  color:white;
+  border-radius:30px;
+  padding:22px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 22px 55px rgba(124,58,237,.22);
+}
+.profileHero:before{
+  content:"";
+  position:absolute;
+  width:170px;
+  height:170px;
+  right:-55px;
+  top:-65px;
+  border-radius:50%;
+  background:rgba(255,255,255,.18);
+}
+.profileHero h3{
+  margin:0;
+  font-size:26px;
+}
+.profileHero p{
+  margin:7px 0 0;
+  color:rgba(255,255,255,.86);
+}
+.profileStats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(135px,1fr));
+  gap:10px;
+}
+.profileStat{
+  background:rgba(255,255,255,.95);
+  border:1px solid #eadcff;
+  border-radius:24px;
+  padding:16px;
+  box-shadow:0 16px 34px rgba(88,28,135,.08);
+}
+.profileStat b{
+  display:block;
+  font-size:24px;
+  color:#7c3aed;
+  margin-top:6px;
+}
+.profileInfoGrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:10px;
+}
+.profileInfo{
+  background:#fff;
+  border:1px solid #eadcff;
+  border-radius:22px;
+  padding:15px;
+}
+.profileLabel{
+  color:#8b5cf6;
+  font-size:13px;
+  font-weight:900;
+  margin-bottom:5px;
+}
+.profileValue{
+  font-size:17px;
+  font-weight:900;
+}
+
+
+.globalCoin{
+  position:absolute;
+  z-index:45;
+  width:42px;
+  height:42px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:radial-gradient(circle at 32% 28%,#fff7b0,#ffd84d 48%,#f59e0b 100%);
+  border:3px solid rgba(255,255,255,.8);
+  box-shadow:0 12px 28px rgba(245,158,11,.35);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  cursor:pointer;
+  animation:coinPop .28s ease, coinFloat 1.4s ease-in-out infinite alternate;
+}
+.globalCoin:after{
+  content:"+3";
+  position:absolute;
+  right:-14px;
+  top:-12px;
+  background:#7c3aed;
+  color:white;
+  border-radius:999px;
+  padding:3px 6px;
+  font-size:11px;
+  font-weight:900;
+}
+@keyframes coinPop{from{transform:translate(-50%,-50%) scale(.3);opacity:0}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
+@keyframes coinFloat{from{margin-top:0}to{margin-top:-8px}}
+.coinModeBox{
+  background:linear-gradient(135deg,#fff7cc,#ffffff);
+  border:1px solid #fde68a;
+  border-radius:24px;
+  padding:16px;
+  box-shadow:0 16px 34px rgba(245,158,11,.12);
+}
+
+@media(max-width:760px){
+  .equalityVideoCard{top:74px}
+}
+
+@media(max-width:760px){
+  .side{transform:translateX(-105%);width:82%}
+  .side.open{transform:translateX(0)}
+  .main{margin-left:0;width:100%;padding:10px}
+  .menuBtn{display:block}
+  .top{border-radius:18px}
+  .title{font-size:13px}
+  .userBox{font-size:12px}
+  button{padding:10px 12px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side" id="side">
+    <div class="logo"></div>
+    <nav class="nav" id="nav"></nav>
+  </aside>
+  <main class="main">
+    <header class="top">
+      <button class="secondary menuBtn" onclick="toggleMenu()">☰</button>
+      <div class="title" id="topText">갈매중학교 1학년 5반 양성평등 사례 공모작</div>
+      <div class="userBox" id="loginArea"></div>
+    </header>
+
+    <section id="home" class="page active"></section>
+    <section id="me" class="page"></section>
+    <section id="notices" class="page"></section>
+    <section id="equality" class="page"></section>
+    <section id="surveys" class="page"></section>
+    <section id="events" class="page"></section>
+    <section id="quizzes" class="page"></section>
+    <section id="games" class="page"></section>
+    <section id="ranking" class="page"></section>
+    <section id="reset" class="page"></section>
+  </main>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modalBox" id="modalBox"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import {
+  getFirestore, collection, doc, setDoc, addDoc, getDoc, getDocs,
+  deleteDoc, updateDoc, onSnapshot, query, orderBy, serverTimestamp,
+  increment, writeBatch
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyATWXTiBj4anl9WeM7j6VDOT6tiMfihgJ8",
+  authDomain: "ghjk-28cd8.firebaseapp.com",
+  projectId: "ghjk-28cd8",
+  storageBucket: "ghjk-28cd8.firebasestorage.app",
+  messagingSenderId: "53257368278",
+  appId: "1:53257368278:web:550e909"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const $ = s => document.querySelector(s);
+const menus = [
+  ["home","홈"],["me","내 정보"],["notices","공지사항"],["equality","양성평등"],
+  ["surveys","설문조사"],["events","이벤트"],["quizzes","퀴즈"],["games","게임"],["ranking","랭킹"],["reset","초기화"]
+];
+let state = {
+  page:"home",
+  user: JSON.parse(localStorage.getItem("ge_user") || "null"),
+  data:{settings:{mainText:"갈매중학교 1학년 5반 양성평등 사례 공모작",showTop:true},users:[],notices:[],equalityPosts:[],surveys:[],eventPosts:[],quizzes:[],coins:[]},
+  wordGame:{playing:false,picked:[],found:[]},
+  bridgeGame:null,
+  limitGame:null
+};
+const uidOf = u => `${u.studentId}_${u.realName}`.replaceAll("/","_");
+const isAdmin = () => state.user?.role === "admin";
+const needLogin = () => { if(!state.user){alert("로그인이 필요합니다."); openLogin(); return false;} return true; };
+const fmt = v => v?.toDate ? v.toDate().toLocaleString("ko-KR") : "";
+
+window.toggleMenu = () => $("#side").classList.toggle("open");
+window.go = id => {state.page=id; render(); $("#side").classList.remove("open");};
+window.closeModal = () => $("#modal").classList.remove("show");
+
+function openModal(html){$("#modalBox").innerHTML=html;$("#modal").classList.add("show");}
+$("#modal").addEventListener("click",e=>{if(e.target.id==="modal") closeModal();});
+
+async function boot(){
+  await ensureDefaults();
+  listen("settings", arr => {
+    const s = arr.find(x=>x.id==="main") || {};
+    state.data.settings = {mainText:s.mainText || "갈매중학교 1학년 5반 양성평등 사례 공모작",showTop:s.showTop !== false, heroColor:s.heroColor || "purple", heroFont:s.heroFont || "round"};
+    render();
+  });
+  ["users","notices","equalityPosts","surveys","eventPosts","quizzes","coins"].forEach(name=>listen(name,arr=>{state.data[name]=arr;render();}));
+  render();
+}
+async function ensureDefaults(){
+  const ref=doc(db,"settings","main");
+  const snap=await getDoc(ref);
+  if(!snap.exists()) await setDoc(ref,{mainText:"갈매중학교 1학년 5반 양성평등 사례 공모작",showTop:true,heroColor:"purple",heroFont:"round"});
+}
+function listen(col, cb){
+  const q = col==="users" ? query(collection(db,col), orderBy("score","desc")) : collection(db,col);
+  onSnapshot(q, snap => cb(snap.docs.map(d=>({id:d.id,...d.data()}))));
+}
+function render(){
+  const s=state.data.settings;
+  $("#topText").textContent = s.showTop ? s.mainText : "";
+  renderNav();
+  renderLogin();
+  menus.forEach(([id])=>$("#"+id).classList.toggle("active",id===state.page));
+  renderHome(); renderMe(); renderNotices(); renderEquality(); renderSurveys(); renderEvents(); renderQuizzes(); renderGames(); renderRanking(); renderReset(); renderCoins();
+}
+function renderNav(){
+  $("#nav").innerHTML=menus.filter(([id])=>id!=="reset" || isAdmin()).map(([id,label])=>`<button class="${state.page===id?'active':''}" onclick="go('${id}')">${label}</button>`).join("");
+}
+function renderLogin(){
+  $("#loginArea").innerHTML = state.user
+  ? `<span class="badge">${isAdmin() ? "홍길동 님(관리자)" : state.user.nickname+" 님(학생)"}</span><button class="secondary small" onclick="logout()">로그아웃</button>`
+  : `<button class="small" onclick="openLogin()">로그인</button>`;
+}
+window.openLogin = () => openModal(`
+  <h3>로그인</h3>
+  <div class="form">
+    <input id="studentId" placeholder="학번을 입력하세요">
+    <input id="realName" placeholder="이름을 입력하세요">
+    <div class="noticeSmall">⚠️ 반드시 실명을 사용하세요.</div>
+    <input id="nickname" placeholder="닉네임을 입력하세요">
+    <div class="row">
+      <button onclick="login()">로그인</button>
+      <button class="secondary" onclick="closeModal()">닫기</button>
+    </div>
+  </div>`);
+window.login = async () => {
+  const studentId=$("#studentId").value.trim(), realName=$("#realName").value.trim(), nickname=$("#nickname").value.trim();
+  if(!studentId||!realName) return alert("학번과 이름을 입력하세요.");
+  let user;
+  if(studentId==="33669" && realName==="홍길동" && nickname===""){
+    user={studentId,realName,nickname:"홍길동",role:"admin",score:0};
+  }else{
+    if(!nickname) return alert("일반 사용자는 닉네임을 입력해야 합니다.");
+    user={studentId,realName,nickname,role:"student",score:0};
+  }
+  const id=uidOf(user), ref=doc(db,"users",id), snap=await getDoc(ref);
+  if(snap.exists()) user={id,...snap.data()};
+  else await setDoc(ref,{...user,joinedAt:serverTimestamp(),surveyHistory:{},quizHistory:{},gameHistory:{}});
+  state.user={id,...user};
+  localStorage.setItem("ge_user",JSON.stringify(state.user));
+  closeModal(); render();
+};
+window.logout = () => {localStorage.removeItem("ge_user");state.user=null;render();};
+
+function heroColorStyle(color){
+  const map={
+    purple:"linear-gradient(135deg,#7c3aed,#a855f7 55%,#c084fc)",
+    blue:"linear-gradient(135deg,#2563eb,#60a5fa 60%,#22d3ee)",
+    pink:"linear-gradient(135deg,#db2777,#fb7185 58%,#f9a8d4)",
+    green:"linear-gradient(135deg,#059669,#34d399 58%,#a7f3d0)",
+    black:"linear-gradient(135deg,#111827,#374151 58%,#6b7280)"
+  };
+  return map[color] || map.purple;
+}
+function heroFontStyle(font){
+  const map={
+    round:"'Jua',system-ui,sans-serif",
+    clean:"system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif",
+    serif:"Georgia,'Times New Roman',serif",
+    bold:"Impact,'Arial Black',system-ui,sans-serif"
+  };
+  return map[font] || map.round;
+}
+function renderHome(){
+  const s=state.data.settings;
+  $("#home").innerHTML=`
+    <div class="hero" style="background:${heroColorStyle(s.heroColor)};font-family:${heroFontStyle(s.heroFont)}">
+      <h1>${s.mainText}</h1>
+      <p>존중 · 다양성 · 공정 · 평등</p>
+    </div>
+    ${isAdmin()?`
+    <div class="card">
+      <h3>관리</h3>
+      <div class="form">
+        <input id="homeTextInput" value="${esc(s.mainText)}">
+        <div class="row">
+          <select id="heroColorInput">
+            <option value="purple" ${s.heroColor==="purple"?"selected":""}>보라색</option>
+            <option value="blue" ${s.heroColor==="blue"?"selected":""}>파란색</option>
+            <option value="pink" ${s.heroColor==="pink"?"selected":""}>핑크색</option>
+            <option value="green" ${s.heroColor==="green"?"selected":""}>초록색</option>
+            <option value="black" ${s.heroColor==="black"?"selected":""}>블랙</option>
+          </select>
+          <select id="heroFontInput">
+            <option value="round" ${s.heroFont==="round"?"selected":""}>동글동글</option>
+            <option value="clean" ${s.heroFont==="clean"?"selected":""}>깔끔한 기본체</option>
+            <option value="serif" ${s.heroFont==="serif"?"selected":""}>고급 명조 느낌</option>
+            <option value="bold" ${s.heroFont==="bold"?"selected":""}>강한 제목체</option>
+          </select>
+        </div>
+        <div class="row">
+          <button onclick="saveHomeText()">문구/디자인 저장</button>
+          <button class="secondary" onclick="toggleTopText(${s.showTop ? "false":"true"})">${s.showTop?"상단 문구 숨기기":"상단 문구 보이기"}</button>
+        </div>
+      </div>
+    </div>`:""}
+    <div class="grid">
+      ${menus.filter(([id])=>id!=="reset").map(([id,label])=>`<div class="card" onclick="go('${id}')"><h3>${label}</h3><p class="meta">이동하기</p></div>`).join("")}
+    </div>`;
+}
+window.saveHomeText = async()=> updateDoc(doc(db,"settings","main"),{mainText:$("#homeTextInput").value.trim()||"갈매중학교 1학년 5반 양성평등 사례 공모작",heroColor:$("#heroColorInput")?.value||"purple",heroFont:$("#heroFontInput")?.value||"round"});
+window.toggleTopText = async(v)=> updateDoc(doc(db,"settings","main"),{showTop:v});
+
+
+function countSurveyParticipation(uid){
+  return state.data.surveys.filter(s => (s.votes||{})[uid]).length;
+}
+function countQuizParticipation(uid){
+  return state.data.quizzes.filter(q => (q.history||{})[uid]).length;
+}
+function countGameParticipation(uid){
+  const u = state.data.users.find(x=>x.id===uid);
+  const h = u?.gameHistory || {};
+  return Object.values(h).reduce((sum,v)=>sum+(Number(v)||0),0);
+}
+async function addGameCount(key){
+  if(!state.user?.id) return;
+  await updateDoc(doc(db,"users",state.user.id),{[`gameHistory.${key}`]:increment(1)});
+}
+
+function renderMe(){
+  const u=state.user;
+  if(!u){
+    $("#me").innerHTML = `<div class="card"><h3>내 정보</h3><p>로그인 후 확인할 수 있습니다.</p><button onclick="openLogin()">로그인</button></div>`;
+    return;
+  }
+  const score = getUserScore(u);
+  const surveyCount = countSurveyParticipation(u.id);
+  const quizCount = countQuizParticipation(u.id);
+  const gameCount = countGameParticipation(u.id);
+  $("#me").innerHTML = `
+  <div class="profileWrap">
+    <div class="profileHero">
+      <h3>${esc(u.nickname)} 님의 활동 기록</h3>
+      <p>참여할수록 점수와 랭킹이 올라가요.</p>
+    </div>
+
+    <div class="profileStats">
+      <div class="profileStat">현재 점수<b>${score}점</b></div>
+      <div class="profileStat">설문 참여<b>${surveyCount}회</b></div>
+      <div class="profileStat">퀴즈 참여<b>${quizCount}회</b></div>
+      <div class="profileStat">게임 참여<b>${gameCount}회</b></div>
+    </div>
+
+    ${isAdmin()?`
+    <div class="coinModeBox">
+      <h3>코인 생성</h3>
+      <p class="meta">버튼을 켠 뒤 웹 아무 곳이나 클릭하면 모두에게 보이는 코인이 생성됩니다. 사용자가 코인을 클릭하면 +3점이 지급되고 코인은 사라집니다.</p>
+      <button onclick="toggleCoinCreateMode()">${state.coinCreateMode?"코인 생성 끄기":"코인 생성 켜기"}</button>
+      <span class="badge">${state.coinCreateMode?"생성 모드 ON":"생성 모드 OFF"}</span>
+    </div>`:""}
+
+    <div class="card">
+      <h3>기본 정보</h3>
+      <div class="profileInfoGrid">
+        <div class="profileInfo"><div class="profileLabel">닉네임</div><div class="profileValue">${esc(u.nickname)}</div></div>
+        <div class="profileInfo"><div class="profileLabel">학번</div><div class="profileValue">${esc(u.studentId)}</div></div>
+        <div class="profileInfo"><div class="profileLabel">실명</div><div class="profileValue">${esc(u.realName)}</div></div>
+        <div class="profileInfo"><div class="profileLabel">권한</div><div class="profileValue">${u.role==="admin"?"관리자":"학생"}</div></div>
+      </div>
+    </div>
+  </div>`;
+}
+function getUserScore(u){ return state.data.users.find(x=>x.id===u.id)?.score ?? u.score ?? 0; }
+
+function boardHTML(type,title,canWrite){
+  const arr=state.data[type]||[];
+  return `<div class="card"><div class="row space"><h3>${title}</h3>${canWrite?`<button onclick="openWrite('${type}')">+</button>`:""}</div>
+    <div class="list">${arr.length?arr.map(p=>`<div class="item" onclick="openPost('${type}','${p.id}')">
+      <div class="row space">
+        <div class="itemTitle">${esc(p.title)}</div>
+        ${canWrite?`<div class="row">
+          ${type==="notices"?`<button class="secondary small" onclick="event.stopPropagation();openEditPost('${type}','${p.id}')">수정</button>`:""}
+          <button class="danger small" onclick="event.stopPropagation();del('${type}','${p.id}')">삭제</button>
+        </div>`:""}
+      </div>
+      
+    </div>`).join(""):`<div class="item">아직 글이 없습니다.</div>`}</div></div>`;
+}
+function renderNotices(){ $("#notices").innerHTML=boardHTML("notices","공지사항",isAdmin()); }
+function renderEquality(){
+  $("#equality").innerHTML=`
+    <div class="card equalityVideoCard">
+      <h3>양성평등 영상</h3>
+      <div class="videoWrap">
+        <a class="videoThumb" href="https://youtu.be/ps4bprEhLHw?si=tsqk4KZkRGbatK42" target="_blank" rel="noopener noreferrer">
+          <img src="https://img.youtube.com/vi/ps4bprEhLHw/hqdefault.jpg" alt="양성평등 영상 썸네일">
+          <span class="playBadge">▶</span>
+          <span class="videoHint">눌러서 유튜브에서 영상 재생하기</span>
+        </a>
+      </div>
+    </div>
+  ` + boardHTML("equalityPosts","양성평등",isAdmin());
+}
+window.openWrite = type => openModal(`<h3>글쓰기</h3><div class="form"><input id="postTitle" placeholder="제목"><textarea id="postContent" placeholder="내용"></textarea><div class="row"><button onclick="savePost('${type}')">완료</button><button class="secondary" onclick="closeModal()">닫기</button></div></div>`);
+window.savePost = async type => {
+  if(!needLogin()) return;
+  const title=$("#postTitle").value.trim(), content=$("#postContent").value.trim();
+  if(!title||!content) return alert("제목과 내용을 입력하세요.");
+  await addDoc(collection(db,type),{title,content,createdAt:serverTimestamp(),author:state.user.nickname,authorRole:state.user.role});
+  closeModal();
+};
+
+window.openEditPost = (type,id) => {
+  if(!isAdmin() || type!=="notices") return alert("관리자만 공지사항을 수정할 수 있습니다.");
+  const p=state.data[type].find(x=>x.id===id);
+  if(!p) return alert("글을 찾을 수 없습니다.");
+  openModal(`<h3>공지사항 수정</h3>
+    <div class="form">
+      <input id="editPostTitle" value="${escAttr(p.title)}" placeholder="제목">
+      <textarea id="editPostContent" placeholder="내용">${esc(p.content)}</textarea>
+      <div class="row">
+        <button onclick="saveEditPost('${type}','${id}')">수정 완료</button>
+        <button class="secondary" onclick="closeModal()">닫기</button>
+      </div>
+    </div>`);
+};
+window.saveEditPost = async (type,id) => {
+  if(!isAdmin() || type!=="notices") return alert("관리자만 공지사항을 수정할 수 있습니다.");
+  const title=$("#editPostTitle").value.trim(), content=$("#editPostContent").value.trim();
+  if(!title||!content) return alert("제목과 내용을 입력하세요.");
+  await updateDoc(doc(db,type,id),{title,content,updatedAt:serverTimestamp(),updatedBy:state.user.nickname});
+  closeModal();
+};
+
+window.openPost = (type,id) => {
+  const p=state.data[type].find(x=>x.id===id);
+  openModal(`<h3>${esc(p.title)}</h3><p style="white-space:pre-wrap">${esc(p.content)}</p><button class="secondary" onclick="closeModal()">닫기</button>`);
+};
+window.del = async(type,id)=>{ if(confirm("삭제하시겠습니까?")) await deleteDoc(doc(db,type,id)); };
+
+function renderSurveys(){
+  $("#surveys").innerHTML=`<div class="card"><div class="row space"><h3>설문조사</h3>${isAdmin()?`<button onclick="openSurveyMake()">설문 생성</button>`:""}</div>
+  <div class="list">${state.data.surveys.map(surveyCard).join("") || `<div class="item">설문이 없습니다.</div>`}</div></div>`;
+}
+function surveyCard(s){
+  const total = Object.values(s.votes||{}).length;
+  const my = state.user ? (s.votes||{})[state.user.id]?.option : null;
+  const counts={}; (s.options||[]).forEach(o=>counts[o]=0); Object.values(s.votes||{}).forEach(v=>counts[v.option]=(counts[v.option]||0)+1);
+  return `<div class="item" oncontextmenu="event.preventDefault();showSurveyPeople('${s.id}')" onpointerdown="holdStart(()=>showSurveyPeople('${s.id}'))" onpointerup="holdEnd()" onpointerleave="holdEnd()">
+    <div class="row space"><div class="itemTitle">${esc(s.title)}</div>${isAdmin()?`<button class="danger small" onclick="event.stopPropagation();del('surveys','${s.id}')">삭제</button>`:""}</div>
+    ${(s.options||[]).map(o=> my ? `<div style="margin:9px 0"><b>${esc(o)}</b> ${my===o?'<span class="badge">내 선택</span>':''}<div class="bar"><span style="width:${total?counts[o]/total*100:0}%"></span></div><div class="meta">${counts[o]||0}표</div></div>` : `<button class="surveyOption" onclick="voteSurvey('${s.id}','${escAttr(o)}')">${esc(o)}</button>`).join("")}
+    <div class="meta">전체 참여자 ${total}명</div>
+  </div>`;
+}
+window.openSurveyMake = ()=>openModal(`<h3>설문 생성</h3><div class="form"><input id="surveyTitle" placeholder="질문"><textarea id="surveyOptions" placeholder="선택지를 줄바꿈으로 입력"></textarea><div class="row"><button onclick="saveSurvey()">생성</button><button class="secondary" onclick="closeModal()">닫기</button></div></div>`);
+window.saveSurvey = async()=>{
+  const title=$("#surveyTitle").value.trim(), options=$("#surveyOptions").value.split("\n").map(x=>x.trim()).filter(Boolean);
+  if(!title||options.length<2) return alert("질문과 선택지 2개 이상을 입력하세요.");
+  await addDoc(collection(db,"surveys"),{title,options,votes:{},createdAt:serverTimestamp()});
+  closeModal();
+};
+window.voteSurvey = async(id,opt)=>{
+  if(!needLogin()) return;
+  if(!confirm("설문을 완료했습니까?")) return;
+  const s=state.data.surveys.find(x=>x.id===id), first=!(s.votes||{})[state.user.id];
+  await updateDoc(doc(db,"surveys",id),{[`votes.${state.user.id}`]:{studentId:state.user.studentId,realName:state.user.realName,nickname:state.user.nickname,option:opt}});
+  if(first) await addScore(state.user.id,5);
+};
+window.showSurveyPeople = id=>{
+  if(!isAdmin()) return;
+  const s=state.data.surveys.find(x=>x.id===id);
+  openModal(`<h3>참여자</h3><div class="list">${Object.values(s.votes||{}).map(v=>`<div class="item">${esc(v.studentId)} / ${esc(v.realName)} / ${esc(v.nickname)}<br><b>${esc(v.option)}</b></div>`).join("")||"참여자 없음"}</div><button class="secondary" onclick="closeModal()">닫기</button>`);
+};
+let holdTimer=null;
+window.holdStart=fn=>{holdTimer=setTimeout(fn,650)};
+window.holdEnd=()=>clearTimeout(holdTimer);
+
+function renderEvents(){
+  $("#events").innerHTML=`<div class="card"><div class="row space"><h3>이벤트</h3><button onclick="openEventWrite()">글쓰기</button></div>
+  <div class="list">${state.data.eventPosts.map(p=>`<div class="item" oncontextmenu="event.preventDefault();eventAdmin('${p.id}')" onpointerdown="holdStart(()=>eventAdmin('${p.id}'))" onpointerup="holdEnd()" onpointerleave="holdEnd()">
+    <div class="row space"><div class="itemTitle">${esc(p.title)}</div>${isAdmin()?`<button class="danger small" onclick="event.stopPropagation();del('eventPosts','${p.id}')">삭제</button>`:""}</div>
+    <p>${esc(p.content)}</p><div class="meta">${esc(p.nickname)} · ${fmt(p.createdAt)}</div>
+  </div>`).join("") || `<div class="item">게시글이 없습니다.</div>`}</div></div>`;
+}
+window.openEventWrite=()=>{ if(!needLogin())return; openModal(`<h3>이벤트 글쓰기</h3><div class="form"><input id="eventTitle" placeholder="제목"><textarea id="eventContent" placeholder="본문"></textarea><div class="row"><button onclick="saveEvent()">등록</button><button class="secondary" onclick="closeModal()">닫기</button></div></div>`); };
+window.saveEvent=async()=>{
+  const title=$("#eventTitle").value.trim(), content=$("#eventContent").value.trim();
+  if(!title||!content) return alert("제목과 내용을 입력하세요.");
+  await addDoc(collection(db,"eventPosts"),{title,content,uid:state.user.id,nickname:state.user.nickname,studentId:state.user.studentId,realName:state.user.realName,createdAt:serverTimestamp()});
+  closeModal();
+};
+window.eventAdmin=id=>{
+  if(!isAdmin()) return;
+  const p=state.data.eventPosts.find(x=>x.id===id), u=state.data.users.find(x=>x.id===p.uid);
+  openModal(`<h3>점수 부여</h3><div class="item">${p.nickname}<br>${p.studentId} / ${p.realName}<br>현재 점수 ${u?.score||0}</div><div class="form"><input id="giveScore" type="number" placeholder="점수"><div class="row"><button onclick="giveEventScore('${p.uid}')">부여</button><button class="secondary" onclick="closeModal()">닫기</button></div></div>`);
+};
+window.giveEventScore=async(uid)=>{const n=parseInt($("#giveScore").value||"0"); if(n>0){await addScore(uid,n); closeModal();}};
+
+function renderQuizzes(){
+  $("#quizzes").innerHTML=`<div class="card"><div class="row space"><h3>퀴즈</h3>${isAdmin()?`<button onclick="openQuizMake()">퀴즈 생성</button>`:""}</div>
+  <div class="list">${state.data.quizzes.map(q=>quizCard(q)).join("") || `<div class="item">퀴즈가 없습니다.</div>`}</div></div>`;
+}
+function quizCard(q){
+  const h=state.user ? (q.history||{})[state.user.id]||{} : {};
+  const locked = h.coolUntil && Date.now() < h.coolUntil;
+  const earned = h.correct;
+  return `<div class="item"><div class="row space"><div class="itemTitle">${esc(q.question)}</div>${isAdmin()?`<button class="danger small" onclick="del('quizzes','${q.id}')">삭제</button>`:""}</div>
+    <div class="meta">${q.type} ${earned?"/ 점수 획득 완료":""}</div>
+    ${locked?`<p class="noticeSmall">쿨타임 중입니다.</p>`:quizInput(q)}
+  </div>`;
+}
+function quizInput(q){
+  if(q.type==="OX") return `<div class="row"><button onclick="answerQuiz('${q.id}','O')">O</button><button onclick="answerQuiz('${q.id}','X')">X</button></div>`;
+  if(q.type==="객관식") return (q.options||[]).map(o=>`<button class="quizOption" onclick="answerQuiz('${q.id}','${escAttr(o)}')">${esc(o)}</button>`).join("");
+  return `<div class="row"><input id="ans_${q.id}" placeholder="정답 입력"><button onclick="answerQuiz('${q.id}',document.getElementById('ans_${q.id}').value)">제출</button></div>`;
+}
+window.openQuizMake=()=>openModal(`<h3>퀴즈 생성</h3><div class="form">
+<select id="quizType"><option>객관식</option><option>주관식</option><option>OX</option></select>
+<textarea id="quizQ" placeholder="문제 내용"></textarea>
+<textarea id="quizOptions" placeholder="객관식 선택지 줄바꿈 입력"></textarea>
+<input id="quizAnswer" placeholder="정답">
+<textarea id="quizExplain" placeholder="해설 선택 가능"></textarea>
+<div class="row"><button onclick="saveQuiz()">생성</button><button class="secondary" onclick="closeModal()">닫기</button></div></div>`);
+window.saveQuiz=async()=>{
+  const type=$("#quizType").value, question=$("#quizQ").value.trim(), answer=$("#quizAnswer").value.trim(), explanation=$("#quizExplain").value.trim();
+  const options=$("#quizOptions").value.split("\n").map(x=>x.trim()).filter(Boolean);
+  if(!question||!answer) return alert("문제와 정답을 입력하세요.");
+  await addDoc(collection(db,"quizzes"),{type,question,options,answer,explanation,history:{},createdAt:serverTimestamp()});
+  closeModal();
+};
+window.answerQuiz=async(id,ans)=>{
+  if(!needLogin()) return;
+  const q=state.data.quizzes.find(x=>x.id===id), h=(q.history||{})[state.user.id]||{wrong:0,correct:false};
+  if(h.correct) return alert("이미 점수를 얻은 문제입니다.");
+  if(String(ans).trim().replaceAll(" ","") === String(q.answer).trim().replaceAll(" ","")){
+    const score=Math.max(0,10-(h.wrong||0));
+    await updateDoc(doc(db,"quizzes",id),{[`history.${state.user.id}`]:{...h,correct:true,earned:score}});
+    if(score>0) await addScore(state.user.id,score);
+    alert(`정답입니다. +${score}점`);
+  }else{
+    await updateDoc(doc(db,"quizzes",id),{[`history.${state.user.id}`]:{...h,wrong:(h.wrong||0)+1,coolUntil:Date.now()+60000}});
+    alert("오답입니다. 1분 쿨타임입니다.");
+  }
+};
+
+const positive=["존중","다양성","기회","공정","평등"];
+const wordLayouts=[
+  [["존중",0,0,0,1],["다양성",1,1,1,0],["기회",0,7,1,0],["공정",3,2,1,1],["평등",6,5,0,1]],
+  [["존중",0,0,1,0],["다양성",0,2,1,1],["기회",6,0,0,1],["공정",4,7,1,0],["평등",7,5,0,1]],
+  [["존중",7,0,0,1],["다양성",0,5,1,0],["기회",2,0,1,1],["공정",5,3,0,1],["평등",0,1,1,1]],
+  [["존중",0,6,1,0],["다양성",4,0,0,1],["기회",7,6,0,1],["공정",2,5,1,-1],["평등",1,0,1,0]],
+  [["존중",3,0,0,1],["다양성",0,0,1,1],["기회",0,4,1,0],["공정",6,4,0,1],["평등",5,7,1,0]]
+];
+const bridgeWords=[
+  {word:"양성평등", hint:"성별에 관계없이 동등하게 대우받는 것이에요."},
+  {word:"성별", hint:"남성과 여성 등을 구분하는 말이에요."},
+  {word:"젠더", hint:"사회와 문화가 만든 성의 개념이에요."},
+  {word:"성역할", hint:"성별에 따라 기대되는 행동이나 역할이에요."},
+  {word:"성인지감수성", hint:"성차별이나 성불평등 문제를 인식하는 능력이에요."},
+  {word:"고정관념", hint:"사람을 일정한 틀로 판단하는 생각이에요."},
+  {word:"차별", hint:"어떤 이유로 불공평하게 대하는 행동이에요."},
+  {word:"존중", hint:"상대방을 소중하게 생각하는 태도예요."},
+  {word:"다양성", hint:"서로 다른 점을 인정하고 받아들이는 가치예요."},
+  {word:"권리", hint:"모든 사람이 당연히 누려야 하는 것이에요."}
+];
+function gameCoolLeft(key){ return Math.max(0, Math.ceil(((state[key]||0)-Date.now())/1000)); }
+function setGameCooldown(key, ms=10000){ state[key]=Date.now()+ms; setTimeout(render,ms); }
+if(!window.gameCooldownTick){ window.gameCooldownTick=setInterval(()=>{ if(state.page==="games") render(); },1000); }
+function makeWordGrid(){
+  const layout=wordLayouts[Math.floor(Math.random()*wordLayouts.length)];
+  const filler="가나다라마바사아자차카타파하배려소통친구학교문화마음함께우리";
+  const grid=Array(64).fill("");
+  const paths={};
+  layout.forEach(([word,r,c,dr,dc])=>{
+    paths[word]=[];
+    word.split("").forEach((ch,k)=>{
+      const idx=(r+dr*k)*8+(c+dc*k);
+      grid[idx]=ch;
+      paths[word].push(idx);
+    });
+  });
+  for(let i=0;i<64;i++) if(!grid[i]) grid[i]=filler[Math.floor(Math.random()*filler.length)];
+  return {grid,paths};
+}
+function renderGames(){
+  $("#games").innerHTML=`<div class="grid">
+    <div class="card"><h3>고정관념 워드 서치</h3><p class="meta">20초 안에 긍정 단어 5개 찾기</p><div id="wordGame">${wordGameHTML()}</div></div>
+    <div class="card"><h3>평등의 다리</h3><p class="meta">단어를 맞히면 점수를 얻습니다.</p><div id="bridgeGame">${bridgeGameHTML()}</div></div>
+    <div class="card"><h3>평등 한계선</h3><p class="meta">성장 한계선은 성별에 따라 다르지 않습니다.</p><div id="limitGame">${limitGameHTML()}</div></div>
+  </div>`;
+}
+function wordGameHTML(){
+  const cool=gameCoolLeft("wordCooldownUntil");
+  if(cool>0 && !state.wordGame.playing) return `<button disabled>${cool}초 후 다시 가능</button>`;
+  if(!state.wordGame.playing) return `<button onclick="startWordGame()">시작</button>`;
+  const g=state.wordGame;
+  return `<div class="gameBox"><div class="row space"><b>찾은 단어 ${g.found.length}/5</b><span id="wordTime">20</span></div><div class="wordGrid">${g.grid.map((ch,i)=>`<div class="cell ${g.picked.includes(i)?'pick':''} ${g.done.includes(i)?'done':''}" onclick="pickCell(${i})">${ch}</div>`).join("")}</div><p>${positive.map(w=>g.found.includes(w)?"✅ "+w:"⬜ "+w).join(" ")}</p></div>`;
+}
+window.startWordGame=()=>{
+  if(!needLogin()) return;
+  if(gameCoolLeft("wordCooldownUntil")>0) return alert("10초 후 다시 할 수 있습니다.");
+  const made=makeWordGrid();
+  state.wordGame={playing:true,grid:made.grid,paths:made.paths,picked:[],done:[],found:[],start:Date.now()};
+  render();
+  const timer=setInterval(()=>{
+    if(!state.wordGame.playing){clearInterval(timer);return;}
+    const left=20-Math.floor((Date.now()-state.wordGame.start)/1000);
+    const el=$("#wordTime"); if(el) el.textContent=Math.max(0,left);
+    if(left<=0){finishWordGame("시간 종료",false);clearInterval(timer);}
+  },300);
+};
+function sameCells(a,b){ return a.length===b.length && a.every((v,i)=>v===b[i]); }
+function finishWordGame(msg,success){
+  state.wordGame.playing=false;
+  setGameCooldown("wordCooldownUntil");
+  if(success) addScore(state.user.id,5);
+  addGameCount("wordSearch");
+  alert(msg);
+  render();
+}
+window.pickCell=i=>{
+  const g=state.wordGame; if(!g.playing)return;
+  if(g.done.includes(i)) return;
+  g.picked.push(i);
+  for(const w of positive){
+    if(g.found.includes(w)) continue;
+    const path=g.paths[w]||[];
+    const rev=[...path].reverse();
+    if(sameCells(g.picked,path)||sameCells(g.picked,rev)){
+      g.found.push(w);
+      g.done.push(...path);
+      g.picked=[];
+      break;
+    }
+  }
+  if(g.picked.length>3) g.picked=[];
+  if(g.found.length===5){finishWordGame("성공! +5점",true);return;}
+  render();
+};
+function bridgeGameHTML(){
+  const cool=gameCoolLeft("bridgeCooldownUntil");
+  const g=state.bridgeGame;
+  if(cool>0 && !g) return `<button disabled>${cool}초 후 다시 가능</button>`;
+  if(!g) return `<button onclick="startBridge()">시작</button>`;
+  const display = g.word.split("").map(ch=>g.open.includes(ch)?ch:"_").join(" ");
+  const currentInput = composeBridgeInput(g.keys || []);
+  return `<div class="gameBox">
+    <p>힌트: ${g.hint}</p>
+    <p class="meta" style="color:#ffe7c2;font-weight:900">글자수: ${g.word.length}글자 / 남은 기회: ${6-g.wrong}번</p>
+    <div class="letters">${display}</div>
+    <div class="bridge">${Array.from({length:6},(_,i)=>`<span class="plank ${i<g.wrong?'broken':''}"></span>`).join("")}</div>
+    <p class="meta" style="color:#fff8eb">입력한 글자: ${(g.guessed||[]).join(", ") || "없음"}</p>
+    <div class="row">
+      <div class="bridgeFakeInput">${currentInput || "자음·모음을 눌러 조합"}</div>
+      <button onclick="guessBridge()">입력</button>
+    </div>
+    <div class="bridgeKeys">${bridgeKeyboardHTML()}</div>
+    <p class="bridgeGuide">예: 양 = ㅇ + ㅑ + ㅇ / 권 = ㄱ + ㅜ + ㅓ + ㄴ</p>
+  </div>`;
+}
+function bridgeKeyboardHTML(){
+  const rows=[
+    {cls:"top", keys:["ㅂ","ㅈ","ㄷ","ㄱ","ㅅ","ㅛ","ㅕ","ㅑ","ㅐ","ㅔ"]},
+    {cls:"mid", keys:["ㅁ","ㄴ","ㅇ","ㄹ","ㅎ","ㅗ","ㅓ","ㅏ","ㅣ"]},
+    {cls:"bottom", keys:["ㅋ","ㅌ","ㅊ","ㅍ","ㅠ","ㅜ","ㅡ"]}
+  ];
+  return rows.map(r=>`<div class="keyRow ${r.cls}">${r.keys.map(k=>`<button onclick="pressBridgeKey('${k}')">${k}</button>`).join("")}</div>`).join("") +
+    `<div class="keyRow control"><button class="wide" onclick="backBridgeKey()">⌫</button><button class="wide" onclick="clearBridgeInput()">비우기</button><button class="wide" onclick="guessBridge()">입력</button><button class="wide" onclick="clearBridgeInput(); render()">다시 조합</button></div>`;
+}
+const CHO=["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
+const JUNG=["ㅏ","ㅐ","ㅑ","ㅒ","ㅓ","ㅔ","ㅕ","ㅖ","ㅗ","ㅘ","ㅙ","ㅚ","ㅛ","ㅜ","ㅝ","ㅞ","ㅟ","ㅠ","ㅡ","ㅢ","ㅣ"];
+const JONG=["","ㄱ","ㄲ","ㄳ","ㄴ","ㄵ","ㄶ","ㄷ","ㄹ","ㄺ","ㄻ","ㄼ","ㄽ","ㄾ","ㄿ","ㅀ","ㅁ","ㅂ","ㅄ","ㅅ","ㅆ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
+const VOWEL_COMBO={"ㅗㅏ":"ㅘ","ㅗㅐ":"ㅙ","ㅗㅣ":"ㅚ","ㅜㅓ":"ㅝ","ㅜㅔ":"ㅞ","ㅜㅣ":"ㅟ","ㅡㅣ":"ㅢ"};
+const FINAL_COMBO={"ㄱㅅ":"ㄳ","ㄴㅈ":"ㄵ","ㄴㅎ":"ㄶ","ㄹㄱ":"ㄺ","ㄹㅁ":"ㄻ","ㄹㅂ":"ㄼ","ㄹㅅ":"ㄽ","ㄹㅌ":"ㄾ","ㄹㅍ":"ㄿ","ㄹㅎ":"ㅀ","ㅂㅅ":"ㅄ"};
+const FINAL_SPLIT={"ㄳ":["ㄱ","ㅅ"],"ㄵ":["ㄴ","ㅈ"],"ㄶ":["ㄴ","ㅎ"],"ㄺ":["ㄹ","ㄱ"],"ㄻ":["ㄹ","ㅁ"],"ㄼ":["ㄹ","ㅂ"],"ㄽ":["ㄹ","ㅅ"],"ㄾ":["ㄹ","ㅌ"],"ㄿ":["ㄹ","ㅍ"],"ㅀ":["ㄹ","ㅎ"],"ㅄ":["ㅂ","ㅅ"]};
+function isVowel(j){return JUNG.includes(j) || ["ㅏ","ㅐ","ㅑ","ㅒ","ㅓ","ㅔ","ㅕ","ㅖ","ㅗ","ㅛ","ㅜ","ㅠ","ㅡ","ㅣ"].includes(j);}
+function isConsonant(j){return CHO.includes(j);}
+function makeSyllable(cho,jung,jong=""){
+  if(!cho || !jung) return (cho||"")+(jung||"")+(jong||"");
+  const ci=CHO.indexOf(cho), vi=JUNG.indexOf(jung), fi=JONG.indexOf(jong);
+  if(ci<0 || vi<0 || fi<0) return cho+jung+(jong||"");
+  return String.fromCharCode(0xAC00 + (ci*21+vi)*28 + fi);
+}
+function composeBridgeInput(keys){
+  let out="", cho="", jung="", jong="";
+  const commit=()=>{ if(cho||jung||jong){ out+=makeSyllable(cho,jung,jong); cho=""; jung=""; jong=""; } };
+  for(const k of keys){
+    if(isVowel(k)){
+      if(!cho){
+        if(!jung) jung=k;
+        else {
+          const combo=VOWEL_COMBO[jung+k];
+          if(combo) jung=combo;
+          else { out+=jung; jung=k; }
+        }
+      }else if(!jung){
+        jung=k;
+      }else if(!jong){
+        const combo=VOWEL_COMBO[jung+k];
+        if(combo) jung=combo;
+        else { commit(); jung=k; }
+      }else{
+        if(FINAL_SPLIT[jong]){
+          const [stay, move]=FINAL_SPLIT[jong];
+          out+=makeSyllable(cho,jung,stay);
+          cho=move; jung=k; jong="";
+        }else{
+          const move=jong;
+          out+=makeSyllable(cho,jung,"");
+          cho=move; jung=k; jong="";
+        }
+      }
+    }else if(isConsonant(k)){
+      if(!cho && !jung){ cho=k; }
+      else if(!cho && jung){ out+=jung; jung=""; cho=k; }
+      else if(cho && !jung){ out+=cho; cho=k; }
+      else if(!jong){ jong=k; }
+      else{
+        const combo=FINAL_COMBO[jong+k];
+        if(combo) jong=combo;
+        else { commit(); cho=k; }
+      }
+    }
+  }
+  commit();
+  return out;
+}
+window.startBridge=()=>{
+  if(!needLogin())return;
+  if(gameCoolLeft("bridgeCooldownUntil")>0) return alert("10초 후 다시 할 수 있습니다.");
+  const picked=bridgeWords[Math.floor(Math.random()*bridgeWords.length)];
+  state.bridgeGame={word:picked.word,hint:picked.hint,open:[],guessed:[],wrong:0,keys:[]};
+  render();
+};
+function finishBridge(msg,success){
+  if(success) addScore(state.user.id,5);
+  addGameCount("bridge");
+  alert(msg);
+  state.bridgeGame=null;
+  setGameCooldown("bridgeCooldownUntil");
+  render();
+}
+window.pressBridgeKey=(jamo)=>{
+  const g=state.bridgeGame; if(!g) return;
+  g.keys=g.keys||[];
+  g.keys.push(jamo);
+  render();
+};
+window.backBridgeKey=()=>{
+  const g=state.bridgeGame; if(!g) return;
+  g.keys=(g.keys||[]).slice(0,-1);
+  render();
+};
+window.clearBridgeInput=()=>{
+  const g=state.bridgeGame; if(!g) return;
+  g.keys=[];
+  render();
+};
+window.guessBridge=()=>{
+  const g=state.bridgeGame;
+  const raw=composeBridgeInput(g?.keys||[]).trim();
+  if(!g || !raw)return;
+  if(raw===g.word){
+    g.open=[...new Set(g.word.split(""))];
+    finishBridge(`성공! 정답은 ${g.word}입니다. +5점`,true);
+    return;
+  }
+  const ch=raw.slice(0,1);
+  if((g.guessed||[]).includes(ch)){ g.keys=[]; render(); return alert("이미 입력한 글자입니다."); }
+  g.guessed.push(ch);
+  if(g.word.includes(ch)){ if(!g.open.includes(ch)) g.open.push(ch); }
+  else g.wrong++;
+  g.keys=[];
+  if(g.word.split("").every(c=>g.open.includes(c))){finishBridge(`성공! 정답은 ${g.word}입니다. +5점`,true);return;}
+  else if(g.wrong>=6){finishBridge(`실패! 정답은 ${g.word}입니다.`,false);return;}
+  render();
+};
+
+
+const limitEmojisBase=["🎀","⚽","📚","🎨","🚀","🌱","🎵","🧩","⭐","🧸","🍀","💡","🏀","🪁","🎮","🌈"];
+function shuffleArr(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function makeLimitTurn(g){
+  g.current=g.emojis[Math.floor(Math.random()*g.emojis.length)];
+}
+function limitGameHTML(){
+  const g=state.limitGame;
+  const cool=gameCoolLeft("limitCooldownUntil");
+  const help=`<button class="secondary small" onclick="openLimitHelp()">?</button>`;
+  if(cool>0 && !g) return `<div class="row"><button disabled>${cool}초 후 다시 가능</button>${help}</div>`;
+  if(!g) return `<div class="row"><button onclick="startLimitGame()">시작</button>${help}</div>`;
+  return `<div class="limitStage">
+    <div class="row space"><b>${g.turn}/40회</b><span class="badge">차이는 클리어 전까지 비공개</span></div>
+    <div class="limitPeople">
+      <button class="limitPerson" onclick="chooseLimitSide('male')">
+        <span class="limitAvatar">💜</span><b style="color:#000">남자</b><span class="limitScore">?</span>${g.floatSide==='male'?`<span class="limitFloat">+${g.floatVal}</span>`:""}
+      </button>
+      <button class="limitPerson" onclick="chooseLimitSide('female')">
+        <span class="limitAvatar">💜</span><b style="color:#000">여자</b><span class="limitScore">?</span>${g.floatSide==='female'?`<span class="limitFloat">+${g.floatVal}</span>`:""}
+      </button>
+    </div>
+    <div class="limitEmoji">${g.current}</div>
+    <p class="meta">이번 이모티콘을 남자 또는 여자에게 눌러 주세요. 숫자는 숨겨져 있지만 같은 이모티콘은 한 판 동안 같은 수치입니다.</p>
+    <div class="limitEmojiList">${g.emojis.join(" ")}</div>
+  </div>`;
+}
+window.openLimitHelp=()=>openModal(`<h3>평등 한계선</h3><p>이모티콘을 남자나 여자에게 나눠 주세요. 같은 이모티콘은 한 판 동안 같은 점수입니다. 두 사람의 점수 차이가 5를 넘지 않게 유지하며 한 명이 20점 이상이면 성공입니다.</p><button class="secondary" onclick="closeModal()">닫기</button>`);
+window.startLimitGame=()=>{
+  if(!needLogin()) return;
+  if(gameCoolLeft("limitCooldownUntil")>0) return alert("12초 후 다시 할 수 있습니다.");
+  const emojis=shuffleArr(limitEmojisBase).slice(0,10);
+  const values={}; emojis.forEach(e=>values[e]=Math.floor(Math.random()*4)+1);
+  state.limitGame={male:0,female:0,turn:1,emojis,values,current:"",floatSide:"",floatVal:0};
+  makeLimitTurn(state.limitGame);
+  render();
+};
+window.chooseLimitSide=(side)=>{
+  const g=state.limitGame; if(!g) return;
+  const v=g.values[g.current];
+  if(side==="male") g.male+=v; else g.female+=v;
+  g.floatSide=side; g.floatVal=v;
+  const diff=Math.abs(g.male-g.female);
+  if(diff>5){
+    const msg=`실패! 점수 차이가 5를 넘었습니다.`;
+    addGameCount("limitLine");
+    addGameCount("limitLine");
+    state.limitGame=null; setGameCooldown("limitCooldownUntil",12000); alert(msg); render(); return;
+  }
+  if(g.male>=20 || g.female>=20){
+    const msg=`클리어! +5점`;
+    addScore(state.user.id,5);
+    addGameCount("limitLine");
+    state.limitGame=null; setGameCooldown("limitCooldownUntil",12000); alert(msg); render(); return;
+  }
+  if(g.turn>=40){
+    const msg=`실패! 40번 안에 20점에 도달하지 못했습니다.`;
+    state.limitGame=null; setGameCooldown("limitCooldownUntil",12000); alert(msg); render(); return;
+  }
+  g.turn++;
+  makeLimitTurn(g);
+  render();
+};
+
+function renderRanking(){
+  const users = state.data.users.filter(u=>u.role!=="admin");
+  const medals = ["🥇","🥈","🥉"];
+  $("#ranking").innerHTML=`<div class="rankingBoard">
+    <div class="rankingHero">
+      <h3>실시간 랭킹</h3>
+      <p>활동 참여 점수로 순위가 바로 반영됩니다.</p>
+    </div>
+    <div class="rankList">
+      ${users.length ? users.map((u,i)=>`
+        <div class="rankItem ${i===0?'top1':i===1?'top2':i===2?'top3':''}">
+          <div class="rankMedal">${medals[i] || i+1}</div>
+          <div>
+            <div class="rankName">${esc(u.nickname)}</div>
+            ${isAdmin()?`<div class="meta">${u.studentId} / ${u.realName}</div>`:""}
+          </div>
+          <div class="rankScore">${u.score||0}점</div>
+        </div>
+      `).join("") : `<div class="item">사용자가 없습니다.</div>`}
+    </div>
+  </div>`;
+}
+function renderReset(){
+  $("#reset").innerHTML=isAdmin()?`<div class="card"><h3>초기화</h3><p>모든 데이터가 삭제됩니다.</p><button class="danger" onclick="resetAll()">초기화</button></div>`:"";
+}
+window.resetAll=async()=>{
+  if(!confirm("정말 초기화 하시겠습니까?"))return;
+  if(!confirm("정말?"))return;
+  const cols=["users","notices","equalityPosts","surveys","eventPosts","quizzes","coins"];
+  for(const c of cols){
+    const snap=await getDocs(collection(db,c));
+    const batch=writeBatch(db);
+    snap.docs.forEach(d=>batch.delete(d.ref));
+    await batch.commit();
+  }
+  await setDoc(doc(db,"settings","main"),{mainText:"갈매중학교 1학년 5반 양성평등 사례 공모작",showTop:true,heroColor:"purple",heroFont:"round"});
+  localStorage.removeItem("ge_user"); state.user=null; alert("초기화 완료");
+};
+async function addScore(uid,n){
+  await updateDoc(doc(db,"users",uid),{score:increment(n)});
+  if(state.user?.id===uid){state.user.score=getUserScore(state.user)+n;localStorage.setItem("ge_user",JSON.stringify(state.user));}
+}
+function esc(s=""){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
+function escAttr(s=""){return esc(s).replaceAll("\n"," ");}
+
+function renderCoins(){
+  document.querySelectorAll(".globalCoin").forEach(x=>x.remove());
+  (state.data.coins||[])
+    .filter(c => (c.page || "home") === state.page)
+    .forEach(c=>{
+      const el=document.createElement("div");
+      el.className="globalCoin";
+      el.style.left=(c.x||0)+"px";
+      el.style.top=(c.y||0)+"px";
+      el.textContent="🪙";
+      el.onclick=(e)=>{e.stopPropagation(); collectCoin(c.id);};
+      document.body.appendChild(el);
+    });
+}
+window.toggleCoinCreateMode=()=>{
+  if(!isAdmin()) return;
+  state.coinCreateMode=!state.coinCreateMode;
+  render();
+};
+document.addEventListener("click", async e=>{
+  if(!state.coinCreateMode || !isAdmin()) return;
+  if(e.target.closest("button,input,textarea,select,.modal,.side,.globalCoin")) return;
+  const x=e.pageX;
+  const y=e.pageY;
+  await addDoc(collection(db,"coins"),{x,y,page:state.page,createdAt:serverTimestamp()});
+});
+window.collectCoin=async(id)=>{
+  if(!needLogin()) return;
+  if(isAdmin()) return alert("관리자는 코인을 먹을 수 없습니다.");
+  try{
+    await deleteDoc(doc(db,"coins",id));
+    await addScore(state.user.id,3);
+    alert("코인 획득! +3점");
+  }catch(e){
+    alert("이미 다른 사용자가 획득한 코인입니다.");
+  }
+};
+
+
+boot();
+</script>
+</body>
+</html>
