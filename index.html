@@ -653,7 +653,7 @@ const menus = [
 let state = {
   page:"home",
   user: JSON.parse(localStorage.getItem("ge_user") || "null"),
-  data:{settings:{mainText:"갈매중학교 1학년 5반 양성평등 사례 공모작",showTop:true},users:[],notices:[],equalityPosts:[],surveys:[],eventPosts:[],quizzes:[],coins:[]},
+  data:{settings:{mainText:"갈매중학교 1학년 5반 양성평등 사례 공모작",showTop:true},users:[],notices:[],equalityPosts:[],surveys:[],eventPosts:[],quizzes:[],coins:[],missions:[]},
   wordGame:{playing:false,picked:[],found:[]},
   bridgeGame:null,
   limitGame:null
@@ -677,7 +677,7 @@ async function boot(){
     state.data.settings = {mainText:s.mainText || "갈매중학교 1학년 5반 양성평등 사례 공모작",showTop:s.showTop !== false, heroColor:s.heroColor || "purple", heroFont:s.heroFont || "round"};
     render();
   });
-  ["users","notices","equalityPosts","surveys","eventPosts","quizzes","coins"].forEach(name=>listen(name,arr=>{state.data[name]=arr;render();}));
+  ["users","notices","equalityPosts","surveys","eventPosts","quizzes","coins","missions"].forEach(name=>listen(name,arr=>{state.data[name]=arr;render();}));
   render();
 }
 async function ensureDefaults(){
@@ -799,6 +799,16 @@ window.toggleTopText = async(v)=> updateDoc(doc(db,"settings","main"),{showTop:v
 function countSurveyParticipation(uid){
   return state.data.surveys.filter(s => (s.votes||{})[uid]).length;
 }
+function countEventPosts(uid){
+  return state.data.eventPosts.filter(p => p.uid === uid).length;
+}
+function missionProgress(uid,m){
+  const surveyNeed = Number(m.surveyNeed || 0);
+  const eventNeed = Number(m.eventNeed || 0);
+  const surveyNow = countSurveyParticipation(uid);
+  const eventNow = countEventPosts(uid);
+  return {surveyNow,eventNow,surveyNeed,eventNeed,done:surveyNow>=surveyNeed && eventNow>=eventNeed};
+}
 function countQuizParticipation(uid){
   return state.data.quizzes.filter(q => (q.history||{})[uid]).length;
 }
@@ -812,6 +822,64 @@ async function addGameCount(key){
   await updateDoc(doc(db,"users",state.user.id),{[`gameHistory.${key}`]:increment(1)});
 }
 
+function missionListHTML(uid){
+  const missions = state.data.missions || [];
+  if(!missions.length) return `<div class="item">등록된 미션이 없습니다.</div>`;
+  return missions.map(m=>{
+    const p = missionProgress(uid,m);
+    const claimed = !!(m.claimed||{})[uid];
+    const reward = Number(m.reward || 0);
+    return `<div class="item">
+      <div class="row space">
+        <div class="itemTitle">${esc(m.title || "미션")}</div>
+        ${isAdmin()?`<button class="danger small" onclick="deleteMission('${m.id}')">삭제</button>`:""}
+      </div>
+      <p class="meta">설문 ${p.surveyNow}/${p.surveyNeed}회 · 이벤트 글 ${p.eventNow}/${p.eventNeed}개 · 보상 ${reward}점</p>
+      <div class="bar"><span style="width:${Math.min(100, ((p.surveyNeed?p.surveyNow/p.surveyNeed:1)+(p.eventNeed?p.eventNow/p.eventNeed:1))/2*100)}%"></span></div>
+      ${claimed ? `<p class="badge">보상 수령 완료</p>` : p.done && !isAdmin() ? `<button class="small" onclick="claimMission('${m.id}')">보상 받기</button>` : `<p class="meta">조건을 달성하면 보상을 받을 수 있습니다.</p>`}
+    </div>`;
+  }).join("");
+}
+window.openMissionMake=()=>{
+  if(!isAdmin()) return alert("관리자만 미션을 만들 수 있습니다.");
+  openModal(`<h3>전체 미션 추가</h3>
+    <div class="form">
+      <input id="missionTitle" placeholder="미션 이름 예: 참여왕 미션">
+      <input id="missionSurvey" type="number" min="0" placeholder="필요 설문 참여 횟수">
+      <input id="missionEvent" type="number" min="0" placeholder="필요 이벤트 글 개수">
+      <input id="missionReward" type="number" min="1" placeholder="보상 점수">
+      <div class="row">
+        <button onclick="saveMission()">미션 생성</button>
+        <button class="secondary" onclick="closeModal()">닫기</button>
+      </div>
+    </div>`);
+};
+window.saveMission=async()=>{
+  if(!isAdmin()) return alert("관리자만 미션을 만들 수 있습니다.");
+  const title=$("#missionTitle").value.trim() || "전체 미션";
+  const surveyNeed=Math.max(0,parseInt($("#missionSurvey").value||"0"));
+  const eventNeed=Math.max(0,parseInt($("#missionEvent").value||"0"));
+  const reward=Math.max(1,parseInt($("#missionReward").value||"0"));
+  if(surveyNeed===0 && eventNeed===0) return alert("설문 횟수나 이벤트 글 개수 중 하나는 1 이상이어야 합니다.");
+  await addDoc(collection(db,"missions"),{title,surveyNeed,eventNeed,reward,claimed:{},createdAt:serverTimestamp(),creator:state.user.nickname});
+  closeModal();
+};
+window.claimMission=async(id)=>{
+  if(!needLogin()) return;
+  const m=state.data.missions.find(x=>x.id===id);
+  if(!m) return alert("미션을 찾을 수 없습니다.");
+  if((m.claimed||{})[state.user.id]) return alert("이미 받은 보상입니다.");
+  const p=missionProgress(state.user.id,m);
+  if(!p.done) return alert("아직 미션 조건을 달성하지 못했습니다.");
+  await updateDoc(doc(db,"missions",id),{[`claimed.${state.user.id}`]:{nickname:state.user.nickname,studentId:state.user.studentId,realName:state.user.realName,claimedAt:Date.now()}});
+  await addScore(state.user.id,Number(m.reward||0));
+  alert(`미션 보상 +${Number(m.reward||0)}점 획득!`);
+};
+window.deleteMission=async(id)=>{
+  if(!isAdmin()) return;
+  if(confirm("미션을 삭제하시겠습니까?")) await deleteDoc(doc(db,"missions",id));
+};
+
 function renderMe(){
   const u=state.user;
   if(!u){
@@ -820,6 +888,7 @@ function renderMe(){
   }
   const score = getUserScore(u);
   const surveyCount = countSurveyParticipation(u.id);
+  const eventCount = countEventPosts(u.id);
   const quizCount = countQuizParticipation(u.id);
   const gameCount = countGameParticipation(u.id);
   $("#me").innerHTML = `
@@ -832,8 +901,14 @@ function renderMe(){
     <div class="profileStats">
       <div class="profileStat">현재 점수<b>${score}점</b></div>
       <div class="profileStat">설문 참여<b>${surveyCount}회</b></div>
+      <div class="profileStat">이벤트 글<b>${eventCount}개</b></div>
       <div class="profileStat">퀴즈 참여<b>${quizCount}회</b></div>
       <div class="profileStat">게임 참여<b>${gameCount}회</b></div>
+    </div>
+
+    <div class="card">
+      <div class="row space"><h3>미션</h3>${isAdmin()?`<button onclick="openMissionMake()">미션 추가</button>`:""}</div>
+      <div class="list">${missionListHTML(u.id)}</div>
     </div>
 
     ${isAdmin()?`
@@ -1028,14 +1103,9 @@ window.answerQuiz=async(id,ans)=>{
   }
 };
 
-const positive=["존중","다양성","기회","공정","평등"];
-const wordLayouts=[
-  [["존중",0,0,0,1],["다양성",1,1,1,0],["기회",0,7,1,0],["공정",3,2,1,1],["평등",6,5,0,1]],
-  [["존중",0,0,1,0],["다양성",0,2,1,1],["기회",6,0,0,1],["공정",4,7,1,0],["평등",7,5,0,1]],
-  [["존중",7,0,0,1],["다양성",0,5,1,0],["기회",2,0,1,1],["공정",5,3,0,1],["평등",0,1,1,1]],
-  [["존중",0,6,1,0],["다양성",4,0,0,1],["기회",7,6,0,1],["공정",2,5,1,-1],["평등",1,0,1,0]],
-  [["존중",3,0,0,1],["다양성",0,0,1,1],["기회",0,4,1,0],["공정",6,4,0,1],["평등",5,7,1,0]]
-];
+const positivePool=["존중","다양성","기회","공정","평등","배려","소통","협력","공감","인정","자유","책임","권리","평화","안전","참여"];
+let positive=["존중","다양성","기회","공정","평등"];
+
 const bridgeWords=[
   {word:"양성평등", hint:"성별에 관계없이 동등하게 대우받는 것이에요."},
   {word:"성별", hint:"남성과 여성 등을 구분하는 말이에요."},
@@ -1046,26 +1116,95 @@ const bridgeWords=[
   {word:"차별", hint:"어떤 이유로 불공평하게 대하는 행동이에요."},
   {word:"존중", hint:"상대방을 소중하게 생각하는 태도예요."},
   {word:"다양성", hint:"서로 다른 점을 인정하고 받아들이는 가치예요."},
-  {word:"권리", hint:"모든 사람이 당연히 누려야 하는 것이에요."}
+  {word:"권리", hint:"모든 사람이 당연히 누려야 하는 것이에요."},
+  {word:"공정", hint:"규칙과 기회를 한쪽에 치우치지 않게 나누는 태도예요."},
+  {word:"기회", hint:"누구나 도전하고 참여할 수 있게 열려 있어야 해요."},
+  {word:"배려", hint:"상대의 상황을 생각하고 도와주는 마음이에요."},
+  {word:"소통", hint:"서로의 생각을 말하고 듣는 과정이에요."},
+  {word:"협력", hint:"함께 목표를 이루기 위해 힘을 모으는 행동이에요."},
+  {word:"공감", hint:"상대의 마음과 처지를 이해하려는 태도예요."},
+  {word:"편견", hint:"충분히 알기 전에 한쪽으로 치우쳐 판단하는 생각이에요."},
+  {word:"인권", hint:"모든 사람이 인간답게 살아가기 위해 가진 기본 권리예요."},
+  {word:"평화", hint:"서로를 해치지 않고 안전하게 지내는 상태예요."},
+  {word:"참여", hint:"활동이나 결정에 함께 들어가는 것이에요."},
+  {word:"책임", hint:"자신의 선택과 행동을 바르게 감당하는 것이에요."},
+  {word:"자유", hint:"다른 사람의 권리를 해치지 않는 선에서 선택할 수 있는 것이에요."},
+  {word:"안전", hint:"위험하거나 불안하지 않게 보호받는 상태예요."},
+  {word:"인정", hint:"서로의 차이와 가치를 받아들이는 태도예요."}
 ];
+
+function pickRandomNoRepeat(list, storageKey, count=1){
+  const recent=JSON.parse(localStorage.getItem(storageKey) || "[]");
+  let pool=list.filter(x=>!recent.includes(typeof x==="string"?x:x.word));
+  if(pool.length<count) pool=[...list];
+  const picked=[];
+  while(picked.length<count && pool.length){
+    const idx=Math.floor(Math.random()*pool.length);
+    picked.push(pool.splice(idx,1)[0]);
+  }
+  const ids=picked.map(x=>typeof x==="string"?x:x.word);
+  localStorage.setItem(storageKey, JSON.stringify([...ids,...recent].slice(0, Math.min(list.length-1, 8))));
+  return count===1 ? picked[0] : picked;
+}
 function gameCoolLeft(key){ return Math.max(0, Math.ceil(((state[key]||0)-Date.now())/1000)); }
 function setGameCooldown(key, ms=10000){ state[key]=Date.now()+ms; setTimeout(render,ms); }
 if(!window.gameCooldownTick){ window.gameCooldownTick=setInterval(()=>{ if(state.page==="games") render(); },1000); }
+
+function canPlaceWord(grid, word, r, c, dr, dc){
+  for(let k=0;k<word.length;k++){
+    const nr=r+dr*k, nc=c+dc*k;
+    if(nr<0 || nr>=8 || nc<0 || nc>=8) return false;
+    const idx=nr*8+nc;
+    if(grid[idx] && grid[idx]!==word[k]) return false;
+  }
+  return true;
+}
+function placeWord(grid, word, r, c, dr, dc){
+  const path=[];
+  for(let k=0;k<word.length;k++){
+    const idx=(r+dr*k)*8+(c+dc*k);
+    grid[idx]=word[k];
+    path.push(idx);
+  }
+  return path;
+}
 function makeWordGrid(){
-  const layout=wordLayouts[Math.floor(Math.random()*wordLayouts.length)];
-  const filler="가나다라마바사아자차카타파하배려소통친구학교문화마음함께우리";
-  const grid=Array(64).fill("");
-  const paths={};
-  layout.forEach(([word,r,c,dr,dc])=>{
-    paths[word]=[];
-    word.split("").forEach((ch,k)=>{
-      const idx=(r+dr*k)*8+(c+dc*k);
-      grid[idx]=ch;
-      paths[word].push(idx);
+  positive=pickRandomNoRepeat(positivePool, "wordSearch_recentWords", 5);
+  const filler="가나다라마바사아자차카타파하배려소통친구학교문화마음함께우리평등존중공감협력";
+  const dirs=[[0,1],[1,0],[1,1],[1,-1],[0,-1],[-1,0],[-1,-1],[-1,1]];
+  let best=null;
+  for(let attempt=0;attempt<80;attempt++){
+    const grid=Array(64).fill("");
+    const paths={};
+    const words=[...positive].sort((a,b)=>b.length-a.length);
+    let ok=true;
+    for(const word of words){
+      let placed=false;
+      const tries=shuffleArr(Array.from({length:8},(_,i)=>i)).flatMap(r=>shuffleArr(Array.from({length:8},(_,i)=>i)).map(c=>[r,c]));
+      const dirTry=shuffleArr(dirs);
+      for(const [r,c] of tries){
+        for(const [dr,dc] of dirTry){
+          if(canPlaceWord(grid, word, r, c, dr, dc)){
+            paths[word]=placeWord(grid, word, r, c, dr, dc);
+            placed=true;
+            break;
+          }
+        }
+        if(placed) break;
+      }
+      if(!placed){ ok=false; break; }
+    }
+    if(ok){ best={grid,paths}; break; }
+  }
+  if(!best){
+    best={grid:Array(64).fill(""),paths:{}};
+    positive=["존중","다양성","기회","공정","평등"];
+    [["존중",0,0,0,1],["다양성",1,1,1,0],["기회",0,7,1,0],["공정",3,2,1,1],["평등",6,5,0,1]].forEach(([word,r,c,dr,dc])=>{
+      best.paths[word]=placeWord(best.grid,word,r,c,dr,dc);
     });
-  });
-  for(let i=0;i<64;i++) if(!grid[i]) grid[i]=filler[Math.floor(Math.random()*filler.length)];
-  return {grid,paths};
+  }
+  for(let i=0;i<64;i++) if(!best.grid[i]) best.grid[i]=filler[Math.floor(Math.random()*filler.length)];
+  return best;
 }
 function renderGames(){
   $("#games").innerHTML=`<div class="grid">
@@ -1213,7 +1352,7 @@ function composeBridgeInput(keys){
 window.startBridge=()=>{
   if(!needLogin())return;
   if(gameCoolLeft("bridgeCooldownUntil")>0) return alert("10초 후 다시 할 수 있습니다.");
-  const picked=bridgeWords[Math.floor(Math.random()*bridgeWords.length)];
+  const picked=pickRandomNoRepeat(bridgeWords, "bridge_recentWords", 1);
   state.bridgeGame={word:picked.word,hint:picked.hint,open:[],guessed:[],wrong:0,keys:[]};
   render();
 };
@@ -1336,10 +1475,12 @@ function renderRanking(){
     <div class="rankingHero">
       <h3>실시간 랭킹</h3>
       <p>활동 참여 점수로 순위가 바로 반영됩니다.</p>
+      ${isAdmin()?`<p class="meta" style="color:rgba(255,255,255,.82);margin-top:8px">관리자는 참가자를 꾹 눌러 정보 확인과 점수 조정이 가능합니다.</p>`:""}
     </div>
     <div class="rankList">
       ${users.length ? users.map((u,i)=>`
-        <div class="rankItem ${i===0?'top1':i===1?'top2':i===2?'top3':''}">
+        <div class="rankItem ${i===0?'top1':i===1?'top2':i===2?'top3':''}"
+          ${isAdmin()?`oncontextmenu="event.preventDefault();openRankUserAdmin('${u.id}')" onpointerdown="holdStart(()=>openRankUserAdmin('${u.id}'))" onpointerup="holdEnd()" onpointerleave="holdEnd()"`:""}>
           <div class="rankMedal">${medals[i] || i+1}</div>
           <div>
             <div class="rankName">${esc(u.nickname)}</div>
@@ -1351,13 +1492,62 @@ function renderRanking(){
     </div>
   </div>`;
 }
+window.openRankUserAdmin=(uid)=>{
+  if(!isAdmin()) return;
+  const u=state.data.users.find(x=>x.id===uid);
+  if(!u) return alert("사용자를 찾을 수 없습니다.");
+  const surveyCount=countSurveyParticipation(uid);
+  const eventCount=countEventPosts(uid);
+  const quizCount=countQuizParticipation(uid);
+  const gameCount=countGameParticipation(uid);
+  const claimed=state.data.missions.filter(m=>(m.claimed||{})[uid]).length;
+  openModal(`<h3>참가자 관리</h3>
+    <div class="profileWrap">
+      <div class="profileHero">
+        <h3>${esc(u.nickname)} 님</h3>
+        <p>${esc(u.studentId)} / ${esc(u.realName)}</p>
+      </div>
+      <div class="profileStats">
+        <div class="profileStat">현재 점수<b>${u.score||0}점</b></div>
+        <div class="profileStat">설문 참여<b>${surveyCount}회</b></div>
+        <div class="profileStat">이벤트 글<b>${eventCount}개</b></div>
+        <div class="profileStat">퀴즈 참여<b>${quizCount}회</b></div>
+        <div class="profileStat">게임 참여<b>${gameCount}회</b></div>
+        <div class="profileStat">미션 보상<b>${claimed}회</b></div>
+      </div>
+      <div class="card">
+        <h3>점수 조정</h3>
+        <div class="form">
+          <input id="rankScoreAmount" type="number" placeholder="점수 입력">
+          <div class="row">
+            <button onclick="adjustRankUserScore('${uid}',1)">점수 부여</button>
+            <button class="danger" onclick="adjustRankUserScore('${uid}',-1)">점수 차감</button>
+            <button class="secondary" onclick="closeModal()">닫기</button>
+          </div>
+          <p class="meta">차감은 입력한 숫자만큼 점수가 줄어듭니다.</p>
+        </div>
+      </div>
+    </div>`);
+};
+window.adjustRankUserScore=async(uid,sign)=>{
+  if(!isAdmin()) return;
+  const n=Math.abs(parseInt($("#rankScoreAmount").value||"0"));
+  if(!n) return alert("점수를 입력하세요.");
+  const u=state.data.users.find(x=>x.id===uid);
+  if(!u) return alert("사용자를 찾을 수 없습니다.");
+  const delta=sign*n;
+  if(delta<0 && !confirm(`${esc(u.nickname)} 님의 점수를 ${n}점 차감할까요?`)) return;
+  await addScore(uid,delta);
+  alert(delta>0 ? `+${n}점 부여 완료` : `-${n}점 차감 완료`);
+  closeModal();
+};
 function renderReset(){
   $("#reset").innerHTML=isAdmin()?`<div class="card"><h3>초기화</h3><p>모든 데이터가 삭제됩니다.</p><button class="danger" onclick="resetAll()">초기화</button></div>`:"";
 }
 window.resetAll=async()=>{
   if(!confirm("정말 초기화 하시겠습니까?"))return;
   if(!confirm("정말?"))return;
-  const cols=["users","notices","equalityPosts","surveys","eventPosts","quizzes","coins"];
+  const cols=["users","notices","equalityPosts","surveys","eventPosts","quizzes","coins","missions"];
   for(const c of cols){
     const snap=await getDocs(collection(db,c));
     const batch=writeBatch(db);
