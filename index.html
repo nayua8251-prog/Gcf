@@ -1147,7 +1147,7 @@ function pickRandomNoRepeat(list, storageKey, count=1){
   return count===1 ? picked[0] : picked;
 }
 function gameCoolLeft(key){ return Math.max(0, Math.ceil(((state[key]||0)-Date.now())/1000)); }
-function setGameCooldown(key, ms=10000){ state[key]=Date.now()+ms; setTimeout(render,ms); }
+function setGameCooldown(key, ms=20000){ state[key]=Date.now()+ms; setTimeout(render,ms); }
 if(!window.gameCooldownTick){ window.gameCooldownTick=setInterval(()=>{ if(state.page==="games") render(); },1000); }
 
 function canPlaceWord(grid, word, r, c, dr, dc){
@@ -1207,11 +1207,17 @@ function makeWordGrid(){
   return best;
 }
 function renderGames(){
+  const missionArea = state.user
+    ? `<div class="card" style="margin-top:14px">
+        <div class="row space"><h3>미션</h3>${isAdmin()?`<button onclick="openMissionMake()">미션 추가</button>`:""}</div>
+        <div class="list">${missionListHTML(state.user.id)}</div>
+      </div>`
+    : `<div class="card" style="margin-top:14px"><h3>미션</h3><p class="meta">로그인하면 현재 진행 가능한 미션이 여기에 표시됩니다.</p><button onclick="openLogin()">로그인</button></div>`;
   $("#games").innerHTML=`<div class="grid">
     <div class="card"><h3>고정관념 워드 서치</h3><p class="meta">20초 안에 긍정 단어 5개 찾기</p><div id="wordGame">${wordGameHTML()}</div></div>
     <div class="card"><h3>평등의 다리</h3><p class="meta">단어를 맞히면 점수를 얻습니다.</p><div id="bridgeGame">${bridgeGameHTML()}</div></div>
     <div class="card"><h3>평등 한계선</h3><p class="meta">성장 한계선은 성별에 따라 다르지 않습니다.</p><div id="limitGame">${limitGameHTML()}</div></div>
-  </div>`;
+  </div>${missionArea}`;
 }
 function wordGameHTML(){
   const cool=gameCoolLeft("wordCooldownUntil");
@@ -1222,7 +1228,7 @@ function wordGameHTML(){
 }
 window.startWordGame=()=>{
   if(!needLogin()) return;
-  if(gameCoolLeft("wordCooldownUntil")>0) return alert("10초 후 다시 할 수 있습니다.");
+  if(gameCoolLeft("wordCooldownUntil")>0) return alert("20초 후 다시 할 수 있습니다.");
   const made=makeWordGrid();
   state.wordGame={playing:true,grid:made.grid,paths:made.paths,picked:[],done:[],found:[],start:Date.now()};
   render();
@@ -1351,7 +1357,7 @@ function composeBridgeInput(keys){
 }
 window.startBridge=()=>{
   if(!needLogin())return;
-  if(gameCoolLeft("bridgeCooldownUntil")>0) return alert("10초 후 다시 할 수 있습니다.");
+  if(gameCoolLeft("bridgeCooldownUntil")>0) return alert("20초 후 다시 할 수 있습니다.");
   const picked=pickRandomNoRepeat(bridgeWords, "bridge_recentWords", 1);
   state.bridgeGame={word:picked.word,hint:picked.hint,open:[],guessed:[],wrong:0,keys:[]};
   render();
@@ -1434,7 +1440,7 @@ function limitGameHTML(){
 window.openLimitHelp=()=>openModal(`<h3>평등 한계선</h3><p>이모티콘을 남자나 여자에게 나눠 주세요. 같은 이모티콘은 한 판 동안 같은 점수입니다. 두 사람의 점수 차이가 5를 넘지 않게 유지하며 한 명이 20점 이상이면 성공입니다.</p><button class="secondary" onclick="closeModal()">닫기</button>`);
 window.startLimitGame=()=>{
   if(!needLogin()) return;
-  if(gameCoolLeft("limitCooldownUntil")>0) return alert("12초 후 다시 할 수 있습니다.");
+  if(gameCoolLeft("limitCooldownUntil")>0) return alert("20초 후 다시 할 수 있습니다.");
   const emojis=shuffleArr(limitEmojisBase).slice(0,10);
   const values={}; emojis.forEach(e=>values[e]=Math.floor(Math.random()*4)+1);
   state.limitGame={male:0,female:0,turn:1,emojis,values,current:"",floatSide:"",floatVal:0};
@@ -1451,17 +1457,17 @@ window.chooseLimitSide=(side)=>{
     const msg=`실패! 점수 차이가 5를 넘었습니다.`;
     addGameCount("limitLine");
     addGameCount("limitLine");
-    state.limitGame=null; setGameCooldown("limitCooldownUntil",12000); alert(msg); render(); return;
+    state.limitGame=null; setGameCooldown("limitCooldownUntil",20000); alert(msg); render(); return;
   }
   if(g.male>=20 || g.female>=20){
     const msg=`클리어! +5점`;
     addScore(state.user.id,5);
     addGameCount("limitLine");
-    state.limitGame=null; setGameCooldown("limitCooldownUntil",12000); alert(msg); render(); return;
+    state.limitGame=null; setGameCooldown("limitCooldownUntil",20000); alert(msg); render(); return;
   }
   if(g.turn>=40){
     const msg=`실패! 40번 안에 20점에 도달하지 못했습니다.`;
-    state.limitGame=null; setGameCooldown("limitCooldownUntil",12000); alert(msg); render(); return;
+    state.limitGame=null; setGameCooldown("limitCooldownUntil",20000); alert(msg); render(); return;
   }
   g.turn++;
   makeLimitTurn(g);
